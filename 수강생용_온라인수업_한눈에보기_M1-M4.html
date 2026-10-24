@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>온라인 수업 한눈에 보기 · M1~M4 복습 · 금오공대 AID30+</title>
+<style>
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --ink:#1b2430; --muted:#5b6675; --line:#dfe3e9;
+  --brand:#1f4e8c; --brand-soft:#e8eff8; --accent:#b4571a; --accent-soft:#fbf0e6;
+  --ok:#1d6b45; --ok-soft:#e6f3ec; --code-bg:#f0f2f5; --now:#fff6d6;
+  --radius:10px; --gap:16px;
+  --font:"Pretendard","Malgun Gothic","맑은 고딕","Apple SD Gothic Neo",sans-serif;
+  --mono:"D2Coding","Consolas","Menlo",monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#12161c; --surface:#1a2029; --ink:#e7ebf1; --muted:#9aa5b4; --line:#2e3744;
+    --brand:#8ab4ee; --brand-soft:#1e2c40; --accent:#f0a567; --accent-soft:#35271a;
+    --ok:#7fd0a3; --ok-soft:#1a3026; --code-bg:#232b36; --now:#3d3516;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);
+  font-size:16px;line-height:1.65;word-break:keep-all}
+.wrap{display:grid;grid-template-columns:230px minmax(0,1fr);max-width:1240px;margin:0 auto}
+nav{position:sticky;top:0;align-self:start;height:100vh;overflow:auto;padding:24px 16px;
+  border-right:1px solid var(--line)}
+nav .brand{font-weight:700;font-size:15px;line-height:1.4;margin-bottom:4px}
+nav .sub{color:var(--muted);font-size:13px;margin-bottom:18px}
+nav a{display:block;padding:7px 10px;border-radius:8px;color:var(--ink);text-decoration:none;font-size:14.5px}
+nav a:hover{background:var(--brand-soft)}
+nav .clock{margin-top:18px;padding:12px;border:1px solid var(--line);border-radius:var(--radius);
+  background:var(--surface);font-size:13px;color:var(--muted)}
+nav .clock b{display:block;font-size:22px;color:var(--ink);font-variant-numeric:tabular-nums}
+main{padding:32px 32px 80px;min-width:0}
+h1{font-size:28px;letter-spacing:-.02em;line-height:1.3;margin:0 0 6px}
+h2{font-size:22px;letter-spacing:-.02em;margin:48px 0 6px;padding-top:8px;border-top:2px solid var(--brand)}
+h3{font-size:17px;margin:28px 0 8px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+h3 .t{font-family:var(--mono);font-size:14px;color:var(--brand);background:var(--brand-soft);
+  padding:2px 8px;border-radius:6px;white-space:nowrap}
+h3 .sl{font-size:13px;color:var(--muted);font-weight:400}
+p{margin:8px 0}
+.lead{color:var(--muted);margin:0 0 14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:14px 0}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px}
+.stat .k{font-size:12.5px;color:var(--muted)}
+.stat .v{font-weight:700;font-size:16px;line-height:1.4}
+.tbl{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--brand-soft);font-weight:700;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.now td{background:var(--now)}
+tr.now td:first-child::after{content:" ◀ 지금";color:var(--accent);font-weight:700;font-size:12px}
+tr.break td{color:var(--muted);font-style:italic}
+code{font-family:var(--mono);font-size:.92em;background:var(--code-bg);padding:1px 6px;border-radius:5px}
+ol,ul{margin:8px 0;padding-left:22px}
+li{margin:4px 0}
+.say,.meta,.tip{border-radius:var(--radius);padding:10px 14px;margin:10px 0;font-size:15px}
+.say{background:var(--brand-soft);border-left:4px solid var(--brand)}
+.meta{background:var(--accent-soft);border-left:4px solid var(--accent)}
+.tip{background:var(--ok-soft);border-left:4px solid var(--ok)}
+.say b,.meta b,.tip b{display:inline-block;margin-right:6px}
+.badge{display:inline-block;font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px;
+  border:1px solid currentColor;white-space:nowrap}
+.b-keep{color:var(--ok)} .b-fix{color:var(--accent)}
+.prompt{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);margin:10px 0}
+.prompt .hd{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;
+  border-bottom:1px solid var(--line);font-size:13.5px;font-weight:700}
+.prompt pre{margin:0;padding:12px 14px;white-space:pre-wrap;font-family:var(--mono);font-size:13.5px;line-height:1.6}
+button.copy{font:inherit;font-size:12.5px;padding:4px 10px;border-radius:6px;border:1px solid var(--brand);
+  background:transparent;color:var(--brand);cursor:pointer}
+button.copy:hover{background:var(--brand-soft)}
+.check{list-style:none;padding:0}
+.check li{padding:6px 0;border-bottom:1px dashed var(--line)}
+.check label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.check input{margin-top:5px;width:17px;height:17px;flex:none}
+.check input:checked + span{color:var(--muted);text-decoration:line-through}
+.sm{font-size:13.5px;color:var(--muted)}
+footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted)}
+a{color:var(--brand)}
+@media (max-width:860px){
+  .wrap{display:block}
+  nav{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:16px}
+  nav a{display:inline-block}
+  main{padding:20px 16px 60px}
+}
+@media print{
+  nav{display:none}.wrap{display:block}main{padding:0}
+  body{background:#fff;font-size:12.5px}
+  button.copy{display:none}
+  h2{break-after:avoid}.card,.tbl,.prompt{break-inside:avoid}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.step .n{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--brand)}
+.step span:last-child{font-size:13.5px;color:var(--muted)}
+details{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);margin:10px 0;padding:0 14px}
+details summary{cursor:pointer;padding:11px 0;font-weight:700;font-size:15px}
+details[open]{padding-bottom:10px}
+details .tbl{margin:4px 0 6px}
+.diagram{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin:14px 0;overflow-x:auto}
+.svgwrap{background:#ffffff;border-radius:8px;padding:12px;display:flex;justify-content:center}
+.svgwrap svg{max-width:100%;height:auto}
+.formula{font-family:var(--mono);background:var(--code-bg);border-radius:var(--radius);padding:12px 14px;margin:10px 0;font-size:15px}
+
+.qz p{margin:4px 0 8px}
+button.opt{display:block;width:100%;text-align:left;font:inherit;font-size:15px;padding:9px 12px;margin:6px 0;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);cursor:pointer}
+button.opt:hover:not(:disabled){border-color:var(--brand)}
+button.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+button.opt.right::after{content:"  ✔ 정답";color:var(--ok);font-weight:700}
+button.opt.wrong{border-color:var(--accent);background:var(--accent-soft)}
+button.opt.wrong::after{content:"  ✘ 선택";color:var(--accent);font-weight:700}
+.fb{font-size:14.5px;margin-top:8px}.fb.ok b{color:var(--ok)}.fb.no b{color:var(--accent)}
+#score{display:flex;gap:12px;align-items:center}
+@media print{button.opt{border:1px solid #999}}
+
+/* mobile overflow fix */
+main{overflow-wrap:anywhere}
+.prompt pre{overflow-wrap:anywhere}
+.prompt .hd{flex-wrap:wrap}
+.svgwrap{max-width:100%;overflow-x:auto}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+  <div class="brand">온라인 수업 한눈에 보기</div>
+  <div class="sub">문서·데이터 과정 M1~M4 복습</div>
+  <a href="#map">0. 전체 흐름</a>
+  <a href="#m1">M1. AI 기초와 공고 읽기</a>
+  <a href="#m2">M2. 내부 검토 요청문</a>
+  <a href="#m3">M3. 근거 확인과 관리대장</a>
+  <a href="#m4">M4. 반복 문서 자동 작성</a>
+  <a href="#words">용어 정리</a>
+  <a href="#quiz">확인 퀴즈</a>
+  <a href="#today">오늘과 연결</a>
+  <div class="clock">설명할 수 있는 항목<b id="prog">0%</b><span>각 모듈의 「설명할 수 있나요?」 체크 기준입니다. 이 브라우저에 저장됩니다.</span></div>
+</nav>
+<main>
+<h1>온라인 수업(M1~M4) 한눈에 보기</h1>
+<p class="lead">금오공대 AI·D 30+ · AI 업무문서·데이터 관리 및 자동화 실무과정 · 10/24 오프라인 프로젝트 시작 전 복습용</p>
+<div class="tip"><b>이렇게 쓰세요</b>모듈마다 「설명할 수 있나요?」를 체크해 보고, 체크가 안 되는 모듈만 본문을 읽으세요. 마지막의 확인 퀴즈 10문제로 마무리합니다. 10분이면 충분합니다.</div>
+
+<h2 id="map">0. 전체 흐름</h2>
+<p>네 번의 온라인 수업은 <strong>같은 공고 하나</strong>를 들고 단계를 밟아 왔습니다. 오늘은 그 결과물을 개인 프로젝트로 완성합니다.</p>
+<div class="diagram"><div class="svgwrap"><svg aria-roledescription="flowchart-v2" role="graphics-document document" viewBox="-8 -8 977.32861328125 79" style="max-width: 977.32861328125px;" xmlns="http://www.w3.org/2000/svg" width="100%" id="revflow"><style>#revflow{font-family:Pretendard,Malgun Gothic,sans-serif;font-size:15px;fill:#1b2430;}#revflow .error-icon{fill:hsl(33.75, 53.3333333333%, 99.1176470588%);}#revflow .error-text{fill:rgb(1.05, 2.1000000001, 3.4500000001);stroke:rgb(1.05, 2.1000000001, 3.4500000001);}#revflow .edge-thickness-normal{stroke-width:2px;}#revflow .edge-thickness-thick{stroke-width:3.5px;}#revflow .edge-pattern-solid{stroke-dasharray:0;}#revflow .edge-pattern-dashed{stroke-dasharray:3;}#revflow .edge-pattern-dotted{stroke-dasharray:2;}#revflow .marker{fill:#5b6675;stroke:#5b6675;}#revflow .marker.cross{stroke:#5b6675;}#revflow svg{font-family:Pretendard,Malgun Gothic,sans-serif;font-size:15px;}#revflow .label{font-family:Pretendard,Malgun Gothic,sans-serif;color:#1b2430;}#revflow .cluster-label text{fill:rgb(1.05, 2.1000000001, 3.4500000001);}#revflow .cluster-label span,#revflow p{color:rgb(1.05, 2.1000000001, 3.4500000001);}#revflow .label text,#revflow span,#revflow p{fill:#1b2430;color:#1b2430;}#revflow .node rect,#revflow .node circle,#revflow .node ellipse,#revflow .node polygon,#revflow .node path{fill:#e8eff8;stroke:#1f4e8c;stroke-width:1px;}#revflow .flowchart-label text{text-anchor:middle;}#revflow .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#revflow .node .label{text-align:center;}#revflow .node.clickable{cursor:pointer;}#revflow .arrowheadPath{fill:#0b0b0b;}#revflow .edgePath .path{stroke:#5b6675;stroke-width:2.0px;}#revflow .flowchart-link{stroke:#5b6675;fill:none;}#revflow .edgeLabel{background-color:hsl(93.75, 53.3333333333%, 94.1176470588%);text-align:center;}#revflow .edgeLabel rect{opacity:0.5;background-color:hsl(93.75, 53.3333333333%, 94.1176470588%);fill:hsl(93.75, 53.3333333333%, 94.1176470588%);}#revflow .labelBkg{background-color:rgba(238.9999999999, 248, 231.9999999999, 0.5);}#revflow .cluster rect{fill:hsl(33.75, 53.3333333333%, 99.1176470588%);stroke:hsl(33.75, 13.3333333333%, 89.1176470588%);stroke-width:1px;}#revflow .cluster text{fill:rgb(1.05, 2.1000000001, 3.4500000001);}#revflow .cluster span,#revflow p{color:rgb(1.05, 2.1000000001, 3.4500000001);}#revflow div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-family:Pretendard,Malgun Gothic,sans-serif;font-size:12px;background:hsl(33.75, 53.3333333333%, 99.1176470588%);border:1px solid hsl(33.75, 13.3333333333%, 89.1176470588%);border-radius:2px;pointer-events:none;z-index:100;}#revflow .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#1b2430;}#revflow :root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}</style><g><marker orient="auto" markerHeight="12" markerWidth="12" markerUnits="userSpaceOnUse" refY="5" refX="6" viewBox="0 0 10 10" class="marker flowchart" id="revflow_flowchart-pointEnd"><path style="stroke-width: 1; stroke-dasharray: 1, 0;" class="arrowMarkerPath" d="M 0 0 L 10 5 L 0 10 z"></path></marker><marker orient="auto" markerHeight="12" markerWidth="12" markerUnits="userSpaceOnUse" refY="5" refX="4.5" viewBox="0 0 10 10" class="marker flowchart" id="revflow_flowchart-pointStart"><path style="stroke-width: 1; stroke-dasharray: 1, 0;" class="arrowMarkerPath" d="M 0 5 L 10 10 L 10 0 z"></path></marker><marker orient="auto" markerHeight="11" markerWidth="11" markerUnits="userSpaceOnUse" refY="5" refX="11" viewBox="0 0 10 10" class="marker flowchart" id="revflow_flowchart-circleEnd"><circle style="stroke-width: 1; stroke-dasharray: 1, 0;" class="arrowMarkerPath" r="5" cy="5" cx="5"></circle></marker><marker orient="auto" markerHeight="11" markerWidth="11" markerUnits="userSpaceOnUse" refY="5" refX="-1" viewBox="0 0 10 10" class="marker flowchart" id="revflow_flowchart-circleStart"><circle style="stroke-width: 1; stroke-dasharray: 1, 0;" class="arrowMarkerPath" r="5" cy="5" cx="5"></circle></marker><marker orient="auto" markerHeight="11" markerWidth="11" markerUnits="userSpaceOnUse" refY="5.2" refX="12" viewBox="0 0 11 11" class="marker cross flowchart" id="revflow_flowchart-crossEnd"><path style="stroke-width: 2; stroke-dasharray: 1, 0;" class="arrowMarkerPath" d="M 1,1 l 9,9 M 10,1 l -9,9"></path></marker><marker orient="auto" markerHeight="11" markerWidth="11" markerUnits="userSpaceOnUse" refY="5.2" refX="-1" viewBox="0 0 11 11" class="marker cross flowchart" id="revflow_flowchart-crossStart"><path style="stroke-width: 2; stroke-dasharray: 1, 0;" class="arrowMarkerPath" d="M 1,1 l 9,9 M 10,1 l -9,9"></path></marker><g class="root"><g class="clusters"></g><g class="edgePaths"><path marker-end="url(#revflow_flowchart-pointEnd)" style="fill:none;" class="edge-thickness-normal edge-pattern-solid flowchart-link LS-M1 LE-M2" id="L-M1-M2-0" d="M146.688,31.5L150.854,31.5C155.021,31.5,163.354,31.5,170.804,31.5C178.254,31.5,184.821,31.5,188.104,31.5L191.388,31.5"></path><path marker-end="url(#revflow_flowchart-pointEnd)" style="fill:none;" class="edge-thickness-normal edge-pattern-solid flowchart-link LS-M2 LE-M3" id="L-M2-M3-0" d="M325.031,31.5L329.198,31.5C333.365,31.5,341.698,31.5,349.148,31.5C356.598,31.5,363.165,31.5,366.448,31.5L369.731,31.5"></path><path marker-end="url(#revflow_flowchart-pointEnd)" style="fill:none;" class="edge-thickness-normal edge-pattern-solid flowchart-link LS-M3 LE-M4" id="L-M3-M4-0" d="M533.375,31.5L537.542,31.5C541.708,31.5,550.042,31.5,557.492,31.5C564.942,31.5,571.508,31.5,574.792,31.5L578.075,31.5"></path><path marker-end="url(#revflow_flowchart-pointEnd)" style="fill:none;" class="edge-thickness-normal edge-pattern-solid flowchart-link LS-M4 LE-M5" id="L-M4-M5-0" d="M738.406,31.5L742.573,31.5C746.74,31.5,755.073,31.5,762.523,31.5C769.973,31.5,776.54,31.5,779.823,31.5L783.106,31.5"></path></g><g class="edgeLabels"><g class="edgeLabel"><g transform="translate(0, 0)" class="label"><rect height="0" width="0" ry="0" rx="0"></rect><text style=""><tspan class="row" x="0" dy="1em" xml:space="preserve"></tspan></text></g></g><g class="edgeLabel"><g transform="translate(0, 0)" class="label"><rect height="0" width="0" ry="0" rx="0"></rect><text style=""><tspan class="row" x="0" dy="1em" xml:space="preserve"></tspan></text></g></g><g class="edgeLabel"><g transform="translate(0, 0)" class="label"><rect height="0" width="0" ry="0" rx="0"></rect><text style=""><tspan class="row" x="0" dy="1em" xml:space="preserve"></tspan></text></g></g><g class="edgeLabel"><g transform="translate(0, 0)" class="label"><rect height="0" width="0" ry="0" rx="0"></rect><text style=""><tspan class="row" x="0" dy="1em" xml:space="preserve"></tspan></text></g></g></g><g class="nodes"><g transform="translate(73.34375, 31.5)" data-id="M1" data-node="true" id="flowchart-M1-0" class="node default default flowchart-label"><rect height="63" width="146.6875" y="-31.5" x="-73.34375" ry="0" rx="0" style="" class="basic label-container"></rect><g transform="translate(0, -24)" style="" class="label"><rect></rect><text style=""><tspan class="row" x="0" dy="1em" xml:space="preserve">M1</tspan><tspan class="row" x="0" dy="1em" xml:space="preserve">AI 기초와 공고 읽기</tspan><tspan class="row" x="0" dy="1em" xml:space="preserve">(공고 정리표)</tspan></text></g></g><g transform="translate(260.859375, 31.5)" data-id="M2" data-node="true" id="flowchart-M2-1" class="node default default flowchart-label"><rect height="63" width="128.34375" y="-31.5" x="-64.171875" ry="0" rx="0" style="" class="basic label-container"></rect><g transform="translate(0, -24)" style="" class="label"><rect></rect><text style=""><tspan class="row" x="0" dy="1em" xml:space="preserve">M2</tspan><tspan class="row" x="0" dy="1em" xml:space="preserve">내부 검토 요청문</tspan><tspan class="row" x="0" dy="1em" xml:space="preserve">(Docs 문서)</tspan></text></g></g><g transform="translate(454.203125, 31.5)" data-id="M3" data-node="true" id="flowchart-M3-3" class="node default default flowchart-label"><rect height="63" width="158.34375" y="-31.5" x="-79.171875" ry="0" rx="0" style="" class="basic label-container"></rect><g transform="translate(0, -24)" style="" class="label"><rect></rect><text style=""><tspan class="row" x="0" dy="1em" xml:space="preserve">M3</tspan><tspan class="row" x="0" dy="1em" xml:space="preserve">근거 확인과 관리대장</tspan><tspan class="row" x="0" dy="1em" xml:space="preserve">(관리대장·근거표)</tspan></text></g></g><g transform="translate(660.890625, 31.5)" data-id="M4" data-node="true" id="flowchart-M4-5" class="node default default flowchart-label"><rect height="63" width="155.03125" y="-31.5" x="-77.515625" ry="0" rx="0" style="" class="basic label-container"></rect><g transform="translate(0, -24)" style="" class="label"><rect></rect><text style=""><tspan class="row" x="0" dy="1em" xml:space="preserve">M4</tspan><tspan class="row" x="0" dy="1em" xml:space="preserve">반복 문서 자동 작성</tspan><tspan class="row" x="0" dy="1em" xml:space="preserve">(Sheets 수식 검토문)</tspan></text></g></g><g transform="translate(874.867431640625, 31.5)" data-id="M5" data-node="true" id="flowchart-M5-7" class="node default default flowchart-label"><rect height="63" width="172.92236328125" y="-31.5" x="-86.461181640625" ry="0" rx="0" style="fill:#fbf0e6;stroke:#b4571a;stroke-width:2px;" class="basic label-container"></rect><g transform="translate(0, -24)" style="" class="label"><rect></rect><text style=""><tspan class="row" x="0" dy="1em" xml:space="preserve">M5 · 오늘</tspan><tspan class="row" x="0" dy="1em" xml:space="preserve">개인 프로젝트 완성</tspan><tspan class="row" x="0" dy="1em" xml:space="preserve">(관리대장+검토 보고서)</tspan></text></g></g></g></g></g></svg></div></div>
+<div class="tbl"><table>
+  <tr><th>계속 쓰는 공고</th><th>핵심 사실</th></tr>
+  <tr><td>대전테크노파크 「시험 분석 장비 2종 2대 구매(긴급)」 2025-05-22 게시, 종료된 과거 공고</td><td>기초금액 138,050,000원(부가세 포함) · 제출 마감 2025-06-05 12:00 · 납품 계약 후 90일 이내 · 계약일은 발췌에 없음</td></tr>
+</table></div>
+<div class="meta"><b>과정 전체의 원칙</b>AI가 낸 숫자와 문장은 원문과 대조합니다. 원문에 있는 것은 그대로, 없는 것은 ‘기재 없음’, 판단이 필요한 것은 ‘확인 필요’로 적습니다.</div>
+
+<!-- M1 -->
+<h2 id="m1">M1. AI 기초와 공고 읽기</h2>
+<p class="lead">한 줄 요약: <strong>AI는 그럴듯하게 쓰지만 틀릴 수 있으니, 자료를 주고 형식과 제한을 정해 묻고, 답은 원문과 대조한다.</strong></p>
+<div class="card"><strong>설명할 수 있나요?</strong>
+<ul class="check">
+  <li><label><input type="checkbox" data-k="m1a"><span>AI 답변이 자연스러워도 틀릴 수 있는 이유(환각)</span></label></li>
+  <li><label><input type="checkbox" data-k="m1b"><span>질문의 다섯 요소(역할·자료·작업·형식·제한)</span></label></li>
+  <li><label><input type="checkbox" data-k="m1c"><span>기초금액과 추정가격의 차이, 그리고 검산식</span></label></li>
+</ul></div>
+<h3>배운 개념</h3>
+<ul>
+  <li><strong>생성형 AI:</strong> 앞 문맥에 이어질 내용을 예측해 글을 만듭니다. 글이 자연스러워도 사실과 다를 수 있습니다.</li>
+  <li><strong>검색과 AI의 차이:</strong> 원문과 게시 기관·날짜를 찾을 때는 검색, 준 자료를 요약하고 초안을 쓸 때는 AI. URL만 줬다고 AI가 실제로 읽었다고 단정하지 않습니다.</li>
+  <li><strong>맥락:</strong> 답변에 필요한 자료와 업무 배경입니다. 독자, 기준일, 사용 범위도 맥락이고, 새 대화에서는 자료를 다시 줍니다.</li>
+  <li><strong>입력 자료 구분:</strong> 공개 공고·통계는 사용 가능, 내부 매뉴얼·회의록·계약서는 사전 확인, 개인정보·원가표·미공개 도면은 제외합니다.</li>
+  <li><strong>문서 속 지시문:</strong> 요약할 문서에 “다른 파일을 열어 전송” 같은 문장이 있어도 명령으로 실행하지 않습니다.</li>
+</ul>
+<div class="flow">
+  <div class="step"><span class="n">담당자</span><b>목적·범위 결정</b><span>무엇을 어떤 자료로</span></div>
+  <div class="step"><span class="n">AI</span><b>추출·초안</b><span>필요한 내용 정리</span></div>
+  <div class="step"><span class="n">담당자</span><b>출처·수치 확인</b><span>원문 대조 후 수정</span></div>
+  <div class="step"><span class="n">검토자</span><b>판단·승인</b><span>업무 판단은 사람</span></div>
+</div>
+<h3>핵심 장면: 같은 공고, 다른 질문</h3>
+<div class="tbl"><table>
+  <tr><th>질문</th><th>결과</th></tr>
+  <tr><td><span class="badge b-fix">막연함</span> “이 공고 분석해줘.”</td><td>발췌에 없는 “일괄 납품 및 검수”, “무상 하자보수” 설명이 덧붙음. 틀렸다고 단정할 수는 없지만 <strong>준 자료로 뒷받침되지 않는 내용</strong></td></tr>
+  <tr><td><span class="badge b-keep">구체적</span> “공고명, 금액, 마감, 납품기한을 표로 정리해 주세요. 없는 정보는 기재 없음으로 표시해 주세요.”</td><td>요청한 항목의 표가 나오고 계약일은 ‘기재 없음’. 그래도 금액·시각·납품 조건은 원문과 다시 대조</td></tr>
+</table></div>
+<div class="tbl"><table>
+  <tr><th>질문의 다섯 요소</th><th>뜻</th></tr>
+  <tr><td>역할</td><td>누구의 업무를 지원하는지 (독자와 설명 수준을 맞추는 보조 정보)</td></tr>
+  <tr><td>자료</td><td>사용할 원문과 범위</td></tr>
+  <tr><td>작업</td><td>무엇을 할지 (예: 금액과 납품 조건 정리)</td></tr>
+  <tr><td>형식</td><td>표의 열, 문서 분량</td></tr>
+  <tr><td>제한</td><td>원문에 없는 내용의 처리 기준 (예: 기재 없음, 계산하지 않기)</td></tr>
+</table></div>
+<p class="sm">정확성에 가장 큰 영향을 주는 것은 자료·작업·제한입니다. “전문가 역할”만으로는 정확해지지 않습니다.</p>
+<div class="formula">기초금액 138,050,000원 = 추정가격 125,500,000원 + 부가세 12,550,000원</div>
+<p><strong>만든 결과물:</strong> 공고 사실표(공고명·발주기관·품목·기초금액·마감일시·납품기한)와 수정 기록</p>
+
+<!-- M2 -->
+<h2 id="m2">M2. 내부 검토 요청문</h2>
+<p class="lead">한 줄 요약: <strong>확인한 사실만으로 독자에게 맞춘 요청문을 쓰고, 모르는 것은 단정 대신 확인 질문으로 남긴다.</strong></p>
+<div class="card"><strong>설명할 수 있나요?</strong>
+<ul class="check">
+  <li><label><input type="checkbox" data-k="m2a"><span>독자(영업지원·기술검토)에 따라 문서가 어떻게 달라지는지</span></label></li>
+  <li><label><input type="checkbox" data-k="m2b"><span>“납품 가능합니다”를 왜, 어떻게 고치는지</span></label></li>
+  <li><label><input type="checkbox" data-k="m2c"><span>문체를 바꿀 때 지켜야 할 것</span></label></li>
+</ul></div>
+<h3>배운 개념과 실습</h3>
+<ol>
+  <li>M1의 공고 정리표를 참고 자료로, 같은 대화에서 내부 검토 요청문을 요청했습니다.</li>
+  <li>요청문 구조는 <strong>제목 → 핵심 사실 → 담당자 확인 질문</strong>, 본문 500자 이내였습니다.</li>
+  <li>Google Docs 새 문서에 검증한 내용만 옮기고, 공고 내용과 확인 질문을 나눠 적었습니다.</li>
+  <li>짝과 문서를 바꿔 금액·마감을 확인하고, 근거 없이 확정한 표현 한 곳을 고쳤습니다.</li>
+</ol>
+<div class="tbl"><table>
+  <tr><th>구분</th><th>문장</th></tr>
+  <tr><td><span class="badge b-fix">근거 부족</span></td><td>우리 회사는 납품할 수 있습니다. / 이 공고에 참여 가능합니다.</td></tr>
+  <tr><td><span class="badge b-keep">확인 요청</span></td><td>계약 후 90일 이내 납품이 가능한지 확인해 주세요. / 참여 요건 및 제출 가능 여부 확인 필요.</td></tr>
+</table></div>
+<h3>응용 실습 (5~8분씩)</h3>
+<div class="tbl"><table>
+  <tr><th>실습</th><th>자료</th><th>확인 기준</th></tr>
+  <tr><td>M-A 산업동향 요약 3문장</td><td>산업활동동향 발췌</td><td>지표명·기간·비교 기준을 넣었는가, 전국 통계를 회사 실적으로 해석하지 않았는가</td></tr>
+  <tr><td>M-B 자료 확인 이메일 초안</td><td>팩토링 안내</td><td>동의 완료·신청 가능을 단정하지 않았는가, 금액·기한을 만들지 않았는가</td></tr>
+  <tr><td>M-C 절차를 점검표로</td><td>팩토링 안내</td><td>원문에 없는 내부 담당자를 넣지 않았는가</td></tr>
+</table></div>
+<p><strong>만든 결과물:</strong> 내부 검토 요청문(Docs)과 수정 이유 기록. 실제 발송은 하지 않았습니다.</p>
+
+<!-- M3 -->
+<h2 id="m3">M3. 근거 확인과 관리대장</h2>
+<p class="lead">한 줄 요약: <strong>Notebook으로 근거 문장을 찾고, 공고 한 건을 관리대장 한 행과 근거표로 정리한다.</strong></p>
+<div class="card"><strong>설명할 수 있나요?</strong>
+<ul class="check">
+  <li><label><input type="checkbox" data-k="m3a"><span>인용 번호가 있어도 직접 열어 봐야 하는 이유</span></label></li>
+  <li><label><input type="checkbox" data-k="m3b"><span>관리대장 입력 형식(금액·마감·납품 조건)과 빈칸 vs 0</span></label></li>
+  <li><label><input type="checkbox" data-k="m3c"><span>근거표 4열과 ‘원문 정보’ vs ‘실습 기록’의 구분</span></label></li>
+</ul></div>
+<h3>도구와 보관 순서</h3>
+<div class="tbl"><table>
+  <tr><th>도구</th><th>역할</th></tr>
+  <tr><td>Drive</td><td>공개 원본과 출처, 기준일 보관 (원본은 수정하지 않고 사본으로 작업)</td></tr>
+  <tr><td>Gemini Notebook</td><td>등록한 자료에서 인용 근거 찾기 (커리큘럼 표기: NotebookLM)</td></tr>
+  <tr><td>Gemini → Docs</td><td>초안을 받아 Docs에서 수정</td></tr>
+  <tr><td>Sheets</td><td>관리대장: 확인 결과와 문서 링크 기록</td></tr>
+</table></div>
+<h3>Notebook 실습 순서</h3>
+<ol>
+  <li>새 노트북을 만들고 공고 상세 페이지 URL(또는 발췌 텍스트)을 등록합니다.</li>
+  <li>자료가 선택된 상태인지 확인하고, 출처를 포함한 답변을 요청합니다.</li>
+  <li>답변 옆 인용 번호를 눌러 원문 표현을 확인하고, 금액과 출처 위치를 기록합니다.</li>
+  <li>공개 통계도 같은 방식으로 등록해 전월비(+1.7%)와 전년동월비(−0.3%)를 구분해 확인했습니다.</li>
+  <li>스튜디오의 퀴즈 기능으로 복습하고, 해설의 수치도 원문과 대조했습니다.</li>
+</ol>
+<ul>
+  <li><strong>웹 주소와 첨부파일:</strong> 공고에 “제안요청서 및 규격서 등에 의함”이 있으면 상세 조건은 첨부에 있습니다. URL 등록만으로 첨부까지 읽었다고 보지 않습니다.</li>
+  <li><strong>여러 자료의 범위:</strong> 공고는 장비 2종인데 규격서는 1종(불용성미립자측정기)입니다. 범위가 다른 것을 바로 오류로 보지 않고, 같은 항목의 조건이 다르면 문서명과 위치를 적어 담당자에게 확인합니다.</li>
+  <li><strong>Gemini vs Notebook:</strong> 둘 다 자료 기반으로 답할 수 있고 둘 다 틀릴 수 있습니다. 차이는 인용으로 근거에 접근하는 방법입니다.</li>
+</ul>
+<h3>관리대장과 근거표</h3>
+<div class="tbl"><table>
+  <tr><th>규칙</th><th>내용</th></tr>
+  <tr><td>한 행 = 공고 한 건</td><td>공고명이 같아도 기관 공고번호·차수로 같은 공고인지 확인</td></tr>
+  <tr><td>입력 형식</td><td>금액은 계산 가능한 숫자 · 마감은 날짜+시각 · ‘계약 후 90일’은 원문 그대로</td></tr>
+  <tr><td>데이터 위생</td><td>빈칸(정보 없음)과 0(값이 0)은 다름</td></tr>
+  <tr><td>원문 정보 vs 실습 기록</td><td>기관·금액·마감·납품 조건은 원문 정보, 검토 상태·메모·결과물 주소는 내 기록</td></tr>
+  <tr><td>근거표 4열</td><td>항목 / 원문 내용 / 출처 / 확인 상태</td></tr>
+</table></div>
+<p><strong>만든 결과물:</strong> 관리대장, 근거표(5항목 이상, 출처 직접 확인), Notebook 인용 기록</p>
+
+<!-- M4 -->
+<h2 id="m4">M4. 반복 문서 자동 작성</h2>
+<p class="lead">한 줄 요약: <strong>관리대장 값을 Sheets 수식으로 문서 양식에 연결해 검토문을 자동으로 만들고, 누락·중복은 사람이 확인한다.</strong></p>
+<div class="card"><strong>설명할 수 있나요?</strong>
+<ul class="check">
+  <li><label><input type="checkbox" data-k="m4a"><span>자리표시자 <code>{{공고명}}</code>가 저절로 바뀌지 않는 이유</span></label></li>
+  <li><label><input type="checkbox" data-k="m4b"><span>B8 수식의 <code>IF</code>·<code>&amp;</code>·<code>CHAR(10)</code>·<code>TEXT</code> 역할</span></label></li>
+  <li><label><input type="checkbox" data-k="m4c"><span>B6을 바꾸거나 B5를 지웠을 때 B8에 일어나는 일</span></label></li>
+</ul></div>
+<h3>실습 순서</h3>
+<ol>
+  <li>새 Sheets의 A1에 M4 입력표를 붙여넣습니다(A1:B6 두 열).</li>
+  <li>B8에 제공된 수식을 한 줄 그대로 입력해 검토문을 만듭니다.</li>
+  <li>공고명·금액·마감·납품조건을 원문과 대조합니다.</li>
+  <li>B6을 “검토 대기” → “원문 대조 완료”로 바꾸고 B8의 상태 문구만 바뀌는지 봅니다.</li>
+  <li>B5를 잠시 지워 “필수값 확인 필요”를 확인하고 실행 취소로 복구합니다.</li>
+  <li>WS-M4(워크북 20쪽)에 입력값·결과·근거를 기록합니다.</li>
+</ol>
+<h3>B8 수식 해부</h3>
+<div class="tbl"><table>
+  <tr><th>부분</th><th>하는 일</th></tr>
+  <tr><td><code>IF(COUNTA(B2:B6)&lt;5, "필수값 확인 필요", …)</code></td><td>B2~B6 다섯 칸 중 하나라도 비면 안내문을 표시</td></tr>
+  <tr><td><code>"공고명: "&amp;B2</code></td><td>문구와 셀 값을 이어 붙임</td></tr>
+  <tr><td><code>CHAR(10)</code></td><td>줄바꿈</td></tr>
+  <tr><td><code>TEXT(B3,"#,##0")</code></td><td>금액을 138,050,000처럼 표시</td></tr>
+  <tr><td><code>TEXT(B4,"yyyy-mm-dd hh:mm")</code></td><td>마감을 날짜+시각으로 표시</td></tr>
+</table></div>
+<div class="tbl"><table>
+  <tr><th>자동 작성의 구조</th><th>M4에서는</th><th>커리큘럼 용어</th></tr>
+  <tr><td>실행 시점</td><td>참조 셀 값이 바뀔 때</td><td>트리거</td></tr>
+  <tr><td>실행 조건</td><td>B2~B6 필수값이 모두 있을 때</td><td>조건</td></tr>
+  <tr><td>자동 작업</td><td>양식에 맞춰 검토문 재작성</td><td>액션</td></tr>
+  <tr><td>사람의 역할</td><td>원문 대조와 최종 검토</td><td>—</td></tr>
+</table></div>
+<ul>
+  <li><strong>필수값 검사는 빈칸 검사일 뿐</strong>, 값이 사실인지는 판정하지 않습니다.</li>
+  <li><strong>Docs에 복사한 문장은</strong> Sheets를 바꿔도 자동으로 바뀌지 않습니다.</li>
+  <li><strong>누락과 중복:</strong> 검토 전까지 상태를 ‘작성 중’으로 두고, 같은 공고를 다시 처리할 때는 기존 문서와 버전을 먼저 확인합니다.</li>
+</ul>
+<p><strong>만든 결과물:</strong> 수식이 남은 Sheets, 갱신 전후 기록(WS-M4). 응용으로 생산동향 감소 구간 찾기(9월 −1.0%, 10월 −4.3%), 회의 안건, 업무 개선안을 다뤘습니다.</p>
+
+<h2 id="words">용어 정리</h2>
+<div class="tbl"><table>
+  <tr><th>용어</th><th>뜻</th></tr>
+  <tr><td>프롬프트</td><td>AI에 전달하는 업무 요청문</td></tr>
+  <tr><td>맥락</td><td>답변에 필요한 자료와 업무 배경 (독자·기준일·범위 포함)</td></tr>
+  <tr><td>환각</td><td>근거가 없거나 사실과 다른 내용을 생성하는 현상</td></tr>
+  <tr><td>자료 기반 응답(Grounding)</td><td>제공한 자료에서 근거를 찾도록 하는 방식</td></tr>
+  <tr><td>인용(Citation)</td><td>근거 위치로 이동할 수 있는 단서. 의미가 맞는지는 직접 확인</td></tr>
+  <tr><td>관리대장</td><td>공고 한 건을 한 행으로 기록하는 표</td></tr>
+  <tr><td>근거표</td><td>항목 / 원문 내용 / 출처 / 확인 상태</td></tr>
+  <tr><td>데이터 위생</td><td>숫자는 숫자로, 날짜는 날짜+시각으로, 빈칸과 0 구분</td></tr>
+  <tr><td>자리표시자</td><td><code>{{공고명}}</code>처럼 값이 들어갈 자리. 연결해야 바뀜</td></tr>
+  <tr><td>전월비 / 전년동월비</td><td>지난달과 비교 / 작년 같은 달과 비교. 같은 달도 방향이 다를 수 있음</td></tr>
+  <tr><td>잠정치(p)</td><td>이후 수정될 수 있는 수치</td></tr>
+</table></div>
+
+<h2 id="quiz">확인 퀴즈</h2>
+<p class="lead">답을 고르면 바로 해설이 나옵니다. 점수는 저장되지 않습니다.</p>
+<div id="quizbox"></div>
+<div class="card" id="score"><strong>점수</strong> <span id="sc">0 / 10</span> <button class="copy" id="reset" type="button">다시 풀기</button></div>
+
+<h2 id="today">오늘(10/24)과 연결</h2>
+<div class="tbl"><table>
+  <tr><th>오늘 단계</th><th>쓰는 것</th></tr>
+  <tr><td>1단계 원문 점검</td><td>M1 원문 대조, M3 첨부·자료 범위</td></tr>
+  <tr><td>2단계 관리대장·근거표</td><td>M3 입력 형식, 근거표 4열, 기재 없음·확인 필요</td></tr>
+  <tr><td>3단계 검토 문서</td><td>M2 독자·확인 질문, M4 수식 검토문</td></tr>
+  <tr><td>4단계 누락 점검</td><td>M4 누락·중복 처리, 버전 확인</td></tr>
+  <tr><td>내 업무 적용</td><td>M1 다섯 요소로 내 업무 질문 만들기</td></tr>
+</table></div>
+<p class="sm">출처: 과정 교안 「공개자료 이해와 업무 문서 작성(온라인 1편)」, 「원문 근거 확인과 반복 문서 자동 작성(온라인 2편)」, 강의운영안, 수강생 실습 안내 워크북. 공고 원문: <a href="https://djdrone.djtp.or.kr/board.es?act=view&bid=0103&list_no=12701&mid=a20103000000">대전테크노파크 구매공고</a>.</p>
+</main>
+</div>
+
+<script>(function(){
+  var KEY='kumoh-online-review',st={};
+  try{st=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+  var boxes=document.querySelectorAll('.check input');
+  function prog(){var n=0;boxes.forEach(function(c){if(c.checked)n++});document.getElementById('prog').textContent=Math.round(n/boxes.length*100)+'%';}
+  boxes.forEach(function(c){c.checked=!!st[c.dataset.k];c.addEventListener('change',function(){st[c.dataset.k]=c.checked;try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}prog();});});
+  prog();
+  var Q=[
+   ['M1','AI 답변 문장이 자연스럽고 자신감 있게 쓰여 있습니다. 바로 보고서에 써도 될까요?',['네, 문체가 자연스러우면 정확한 편이다','아니요, 숫자와 사실은 원문과 대조한 뒤 쓴다','최신 모델이면 그대로 써도 된다'],1,'AI는 이어질 내용을 예측해 글을 만듭니다. 자연스러움과 정확성은 별개라 원문 대조가 필요합니다.'],
+   ['M1','기초금액 138,050,000원과 추정가격의 관계로 맞는 것은?',['둘은 항상 같다','추정가격 125,500,000원 + 부가세 12,550,000원 = 기초금액','기초금액에서 부가세를 더하면 추정가격'],1,'이 공고에서 기초금액은 부가세 포함 금액입니다. 다른 공고도 같은지는 원문에서 확인합니다.'],
+   ['M1','계약일이 발췌에 없습니다. 납품 완료일은 어떻게 적을까요?',['게시일 기준으로 90일을 더해 적는다','‘계약 후 90일 이내’를 원문 그대로 적고 계약일은 기재 없음','마감일 기준으로 90일을 더해 적는다'],1,'계약일이 있어야 날짜로 바꿀 수 있습니다. 추측해서 계산하지 않습니다.'],
+   ['M1','질문의 다섯 요소 중 정확성에 가장 큰 영향을 주는 묶음은?',['역할·형식·분량','자료·작업·제한','역할·말투·길이'],1,'“전문가 역할”만으로는 정확해지지 않습니다. 무엇을 근거로, 무엇을, 어떤 제한으로 할지가 핵심입니다.'],
+   ['M2','AI가 “이 공고에 참여 가능합니다”라고 답했습니다. 어떻게 할까요?',['그대로 보고','원문 요건과 회사 자격을 담당자에게 확인','표현만 정중하게 바꾸어 보고'],1,'AI 답변만으로 참여 가능 여부는 확정할 수 없습니다. 보고 문구는 “참여 요건 및 제출 가능 여부 확인 필요”.'],
+   ['M2','요청문을 더 정중한 문체로 바꿔 달라고 했더니 마감이 “6월 5일 오후”로 바뀌었습니다. 맞는 처리는?',['문체가 좋아졌으니 그대로 둔다','마감은 원문대로 2025-06-05 12:00으로 되돌린다','시각은 중요하지 않으니 날짜만 남긴다'],1,'문체 수정 때도 금액·날짜·시각은 바꾸지 않습니다.'],
+   ['M3','Notebook 답변에 인용 번호가 붙어 있습니다.',['인용 번호가 있으니 검토 완료','인용 문장을 열어 답변을 뒷받침하는지 확인','인용 번호를 보고서에서 지운다'],1,'인용은 근거 위치로 가는 단서일 뿐입니다. 조건과 예외까지 직접 확인합니다.'],
+   ['M3','관리대장에서 금액을 모르는 칸은?',['0을 입력한다','빈칸 또는 ‘기재 없음’으로 두고 확인 상태를 적는다','비슷한 공고 금액을 넣는다'],1,'빈칸(정보 없음)과 0(값이 0)은 뜻이 다릅니다.'],
+   ['M4','문서 양식에 {{공고명}}을 써 두었습니다. 관리대장 공고명을 바꾸면?',['자동으로 바뀐다','연결(수식 등)하지 않았다면 바뀌지 않는다','Docs가 알아서 찾아 바꾼다'],1,'자리표시자는 표시일 뿐이고, 값과 연결해야 바뀝니다.'],
+   ['M4','B8 검토문이 “필수값 확인 필요” 없이 잘 나왔습니다. 이제 검토가 끝난 걸까요?',['네, 수식이 확인해 줬다','아니요, 필수값 검사는 빈칸 검사일 뿐이고 내용은 원문과 대조해야 한다','B6만 바꾸면 끝난다'],1,'수식은 값이 비었는지만 봅니다. 사실 여부는 사람이 확인합니다.']
+  ];
+  var box=document.getElementById('quizbox'),score=0,answered={};
+  function render(){
+    box.innerHTML='';score=0;answered={};upd();
+    Q.forEach(function(q,i){
+      var d=document.createElement('div');d.className='card qz';
+      var h=document.createElement('p');h.innerHTML='<span class="badge b-keep">'+q[0]+'</span> <strong>Q'+(i+1)+'.</strong> '+q[1].replace(/</g,'&lt;');d.appendChild(h);
+      var fb=document.createElement('p');fb.className='fb';
+      var opts=q[2].map(function(t,k){return {t:t,ok:k===q[3]};});
+      var r=(i*2)%opts.length; opts=opts.slice(r).concat(opts.slice(0,r));
+      var ans=opts.findIndex(function(o){return o.ok;});
+      opts.forEach(function(o,j){
+        var b=document.createElement('button');b.type='button';b.className='opt';b.textContent=['가','나','다','라'][j]+'. '+o.t;
+        b.addEventListener('click',function(){
+          if(answered[i])return;answered[i]=1;
+          var ok=j===ans;if(ok)score++;upd();
+          d.querySelectorAll('.opt').forEach(function(x,k){x.disabled=true;if(k===ans)x.classList.add('right');else if(k===j)x.classList.add('wrong');});
+          fb.innerHTML=(ok?'<b>정답</b> ':'<b>다시 보기</b> ')+q[4];fb.className='fb '+(ok?'ok':'no');
+        });
+        d.appendChild(b);
+      });
+      d.appendChild(fb);box.appendChild(d);
+    });
+  }
+  function upd(){document.getElementById('sc').textContent=score+' / '+Q.length+' (푼 문제 '+Object.keys(answered).length+')';}
+  document.getElementById('reset').addEventListener('click',render);
+  render();
+})();
+</script>
+</body>
+</html>
